@@ -8,15 +8,19 @@ import android.view.View
 import android.widget.Button
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.lifecycle.Observer
 import com.example.conversoreurodolar.databinding.ActivityMainBinding
+import com.example.conversoreurodolar.viewModel.ConversorViewModel
 import org.w3c.dom.Text
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
+    private val conversorViewModel: ConversorViewModel by viewModels()
 
     @SuppressLint("SetTextI18n", "DefaultLocale")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -45,13 +49,17 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
+        conversorViewModel.resultado.observe(this, Observer { resultado ->
+
+        })
+
 
 
         binding.btnConvert.setOnClickListener {
             if(binding.txtEuro.text.toString().isNotEmpty()) {
             val _euro = binding.txtEuro.text.toString().toDouble()
-            val conve = String.format("%.2f", _euro * 1.04)
-            binding.txtResult.text = "$conve $"
+                conversorViewModel.euroDolar(_euro)
+
             } else {
                 Toast.makeText(this, "Valor Invalido", Toast.LENGTH_SHORT).show()
             }
